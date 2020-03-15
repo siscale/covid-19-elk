@@ -1,0 +1,53 @@
+{
+	"trigger": {
+		"schedule": {
+			"interval": "12h"
+		}
+	},
+	"input": {
+		"search": {
+			"request": {
+				"body": {
+					"query": {
+						"bool": {
+							"must": [{
+									"match": {
+										"country_region.keyword": "<REPLACE_WITH_COUNTRY>"
+									}
+								}
+							]
+						}
+					},
+					"size": 2,
+					"sort": {
+						"@timestamp": {
+							"order": "desc"
+						}
+					}
+				},
+				"indices": [
+					"covid-19-live-update"
+				]
+			}
+		}
+	},
+	"condition": {
+		"compare": {
+			"ctx.payload.hits.total": {
+				"gt": 1
+			}
+		}
+	},
+	"transform": {
+		"script": "return [ 'country' : ctx.payload.hits.hits[0]._source.country_region, 'province' : ctx.payload.hits.hits[0]._source.province_state, 'confirmed_today' : ctx.payload.hits.hits[0]._source.confirmed, 'deaths_today' : ctx.payload.hits.hits[0]._source.deaths, 'recovered_today' : ctx.payload.hits.hits[0]._source.recovered, 'confirmed_yesterday' : ctx.payload.hits.hits[1]._source.confirmed, 'deaths_yesterday' : ctx.payload.hits.hits[1]._source.deaths, 'recovered_yesterday' : ctx.payload.hits.hits[1]._source.recovered, 'difference_confirmed' : (Integer.parseInt(ctx.payload.hits.hits[0]._source.confirmed) - Integer.parseInt(ctx.payload.hits.hits[1]._source.confirmed)), 'difference_deaths' : (Integer.parseInt(ctx.payload.hits.hits[0]._source.deaths) - Integer.parseInt(ctx.payload.hits.hits[1]._source.deaths)), 'difference_recovered' : (Integer.parseInt(ctx.payload.hits.hits[0]._source.recovered) - Integer.parseInt(ctx.payload.hits.hits[1]._source.recovered))]"
+	},
+	"actions": {
+		"email": {
+			"email": {
+				"to": "username@example.org",
+				"subject": "COVID-19 Status for {{ctx.payload.country}}",
+				"body": "Confirmed/Recovered/Dead: {{ctx.payload.confirmed_today}} (+{{ctx.payload.difference_confirmed}}) / {{ctx.payload.recovered_today}} (+{{ctx.payload.difference_recovered}}) / {{ctx.payload.deaths_today}} (+{{ctx.payload.difference_deaths}})"
+			}
+		}
+	}
+}
