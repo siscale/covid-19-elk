@@ -12,6 +12,13 @@ Fetches time series data from https://github.com/CSSEGISandData/COVID-19/tree/ma
 
 This dataset contains county-level reporting for some countries, including US.
 
+Also, take note of line 40:
+```@github_stored_hashes_path = "/etc/logstash/covid-19-hashes.json"```
+
+This is where the pipeline will store SHA256 hashes of all the CSV files. This is used to optimize data processing: only CSV's that have changed since the pipeline last ran will be processed.
+
+Make sure Logstash has read and write access to the specified path. The default is `/etc/logstash/covid-19-hashes.json`, but feel free to change it.
+
 # Using global time series data
 
 File: `logstash-github-covid-19-time-series-template.conf`
