@@ -1,36 +1,46 @@
 PUT _template/covid-19-live-update
 {
-  "order" : 0,
-  "index_patterns" : [
+    "order" : 0,
+    "index_patterns" : [
       "covid-19-live-update"
     ],
-  "settings" : {},
-  "mappings" : {
-    "properties" : {
-      "confirmed" : {
-        "type" : "long"
-      },
-      "deaths" : {
-        "type" : "long"
-      },
-      "recovered" : {
-        "type" : "long"
-      },
-      "location" : {
-        "type" : "geo_point"
-      },
-      "ratio_deaths_to_confirmed" : {
-        "type" : "float"
-      },
-      "ratio_deaths_to_recovered" : {
-        "type" : "float"
-      },
-      "ratio_recovered_to_confirmed" : {
-        "type" : "float"
-      },
-      "updated_at" : {
-        "type" : "date"
+    "settings" : { },
+    "mappings" : {
+      "properties" : {
+        "recovered" : {
+          "type" : "long"
+        },
+        "updated_at" : {
+          "type" : "date"
+        },
+        "ratio_deaths_to_recovered" : {
+          "type" : "float"
+        },
+        "ratio_recovered_to_confirmed" : {
+          "type" : "float"
+        },
+        "ratio_deaths_to_confirmed" : {
+          "type" : "float"
+        },
+        "location" : {
+          "type" : "geo_point"
+        },
+        "confirmed" : {
+          "type" : "long"
+        },
+        "deaths" : {
+          "type" : "long"
+        },
+        "last_update" : {
+          "type" : "date"
+        },
+        "last_process" : {
+          "type" : "date"
+        },
+        "@timestamp" : {
+          "type" : "date"
+        }
       }
-    }
-  }
+    },
+    "aliases" : { }
 }
