@@ -1,10 +1,33 @@
 ## Logstash pipeline 
 
-File: `logstash-pipeline.conf`
+The default index name is `covid-19-live-update`. Apply the index template found in `index-template-mapping.json` before starting the pipeline.
+
+Choose one pipeline from the following:
+
+# Using daily reporting data
+
+File: `logstash-github-covid-19-daily-reports-template.conf`
+
+Fetches time series data from https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports.
+
+This dataset contains county-level reporting for some countries, including US.
+
+Also, take note of line 40:
+```@github_stored_hashes_path = "/etc/logstash/covid-19-hashes.json"```
+
+This is where the pipeline will store SHA256 hashes of all the CSV files. This is used to optimize data processing: only CSV's that have changed since the pipeline last ran will be processed.
+
+Make sure Logstash has read and write access to the specified path. The default is `/etc/logstash/covid-19-hashes.json`, but feel free to change it.
+
+# Using global time series data
+
+File: `logstash-github-covid-19-time-series-template.conf`
 
 Fetches time series data from https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series.
 
-The default index name is `covid-19-live-update`. Apply the index template found in `index-template-mapping.json` before starting the pipeline.
+This is the original pipeline that was deprecated in favor of the daily reports data.
+
+This time series data is less granular the that daily reporting data, and doesn't contain county data. We recommend using the daily reports pipeline instead.
 
 ## Dashboards, Visuals, Index Pattern (Kibana 7.6.1 only)
 
@@ -23,4 +46,3 @@ Warning: trying to import the dashboard into a Kibana version lower than `7.6.1`
 Files: `watcher-with-country.json` and `watcher-with-province.json`
 
 Send email updates about the current situation in a country or region. Import them in `Kibana > Management > Watcher > Create > Create Advanced Watch`, or use the [Watcher API](https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-put-watch.html).
-
