@@ -25,6 +25,12 @@ PUT _template/covid-19-live-update
         "location" : {
           "type" : "geo_point"
         },
+        "tested": {
+          "type": "long"
+        },
+        "hospitalized": {
+          "type": "long"
+        },
         "confirmed" : {
           "type" : "long"
         },
